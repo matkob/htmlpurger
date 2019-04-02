@@ -20,58 +20,38 @@ public class HtmlLexer {
     }
 
     public Token nextToken() throws GrammarException {
-        char c;
-        String text;
         switch (next) {
             case TAG: return buildTag();
-            case OPENTAG:
-            case CONTENT: return buildContent();
-            case CLOSETAG:
-            case TAGOPEN_NAME: return buildTagopenName();
-            case TAGCLOSE_NAME: return buildTagcloseName();
-            case ATTRIBUTES:
-            case ATTR:
-            case ATTR_NAME: return buildAttrName();
-            case EQUALS:
-            case VALUE:
-            case STRING:
-            case SINGLEQUOTED:
-            case SINGLEQUOTE:
-            case DOUBLEQUOTED:
-            case DOUBLEQUOTE:
-            case NUM:
-            case TEXT:
+
             case TAGOPEN_LEFT: return buildTagopenLeft();
             case TAGOPEN_RIGHT: return buildTagopenRight();
+            case TAGOPEN_NAME: return buildTagopenName();
+
             case TAGCLOSE_LEFT: return buildTagopenLeft();
             case TAGCLOSE_RIGHT: return buildTagcloseRight();
-            case END_OF_TEXT:
+            case TAGCLOSE_NAME: return buildTagcloseName();
+
+            case ATTR_NAME: return buildAttrName();
+            case EQUALS: return buildEquals();
+            case VALUE: return buildValue();
+
+            case CONTENT: return buildContent();
+            case SINGLEQUOTED: return buildDoublequoted();
+            case DOUBLEQUOTED: return buildDoublequoted();
+            case NUM: return buildNum();
+            case TEXT: return buildText();
         }
-        return null;
+        return new Token(builder.toString(), END_OF_TEXT);
     }
 
     private Token buildTag() throws GrammarException {
-        char c;
-        c = truncate();
+        char c = truncate();
         if (c == '<') {
-            next = TAGOPEN_NAME;
+            next = TAGOPEN_LEFT;
             builder.append(c);
             return buildTagopenLeft();
         }
         throw new GrammarException();
-    }
-
-    private Token buildContent() throws GrammarException {
-        char c;
-        c = truncate();
-        builder.append(c);
-        if (c == '<') {
-            next = TAGOPEN_LEFT;
-            return buildTagopenLeft();
-        } else {
-            next = TEXT;
-            return buildText();
-        }
     }
 
     private Token buildTagopenLeft() throws GrammarException {
@@ -102,13 +82,30 @@ public class HtmlLexer {
         }
         if (c == ' ') {
             next = ATTR_NAME;
+            text = builder.toString();
+            builder = new StringBuilder();
         } else {
             next = TAGOPEN_RIGHT;
+            text = builder.toString();
+            builder = new StringBuilder();
+            builder.append(c);
         }
+        return new Token(text, TAGOPEN_NAME);
+    }
+
+    private Token buildTagcloseLeft() throws GrammarException {
+        String text;
+        next = TAGCLOSE_NAME;
         text = builder.toString();
         builder = new StringBuilder();
-        builder.append(c);
-        return new Token(text, TAGOPEN_NAME);
+        return new Token(text, CLOSETAG);
+    }
+
+    private Token buildTagcloseRight() throws GrammarException {
+        String text = builder.toString();
+        builder = new StringBuilder();
+        next = CONTENT;
+        return new Token(text, TAGCLOSE_RIGHT);
     }
 
     private Token buildTagcloseName() throws GrammarException {
@@ -128,36 +125,107 @@ public class HtmlLexer {
         throw new GrammarException();
     }
 
-    private Token buildTagcloseLeft() throws GrammarException {
-        String text;
-        next = TAGCLOSE_NAME;
-        text = builder.toString();
-        builder = new StringBuilder();
-        return new Token(text, CLOSETAG);
-    }
-
-    private Token buildTagcloseRight() throws GrammarException {
-        String text = builder.toString();
-        builder = new StringBuilder();
-        next = CONTENT;
-        return new Token(text, TAGCLOSE_RIGHT);
-    }
-
     private Token buildAttrName() throws GrammarException {
-        char c;
-        String text;//TODO truncate
-        while ((c = reader.nextChar()) != '=' && c != '>') {
+        char c = truncate();
+        String text;
+        if (c != '=' && c != '>') {
             builder.append(c);
+            while ((c = reader.nextChar()) != '=' && c != '>') {
+                builder.append(c);
+            }
+        } else if (c == '=') {
+            next = EQUALS;
+            return buildEquals();
+        } else {
+            next = TAGOPEN_RIGHT;
+            return buildTagopenRight();
         }
         if (c == '=') {
-            next = VALUE;
+            next = EQUALS;
         } else {
-            next = CONTENT;
+            next = TAGOPEN_RIGHT;
         }
         text = builder.toString();
         builder = new StringBuilder();
         builder.append(c);
         return new Token(text, ATTR_NAME);
+    }
+
+    private Token buildValue() throws GrammarException {
+        char c = truncate();
+        builder.append(c);
+        if (c == '\'') {
+            next = SINGLEQUOTED;
+            return buildSinglequoted();
+        } else if (c == '"') {
+            next = DOUBLEQUOTED;
+            return buildDoublequoted();
+        } else if (c >= 48 && c <= 57) {
+            next = NUM;
+            return buildNum();
+        }
+        throw new GrammarException();
+    }
+
+    private Token buildEquals() {
+        String text = builder.toString();
+        builder = new StringBuilder();
+        next = VALUE;
+        return new Token(text, EQUALS);
+    }
+
+    private Token buildSinglequoted() {
+        char c;
+        String text;
+        while ((c = reader.nextChar()) != '\'') {
+            builder.append(c);
+        }
+        builder.append(c);
+        next = ATTR_NAME;
+        text = builder.toString();
+        builder = new StringBuilder();
+        return new Token(text, SINGLEQUOTED);
+    }
+
+    private Token buildDoublequoted() {
+        char c;
+        String text;
+        while ((c = reader.nextChar()) != '"') {
+            builder.append(c);
+        }
+        builder.append(c);
+        next = ATTR_NAME;
+        text = builder.toString();
+        builder = new StringBuilder();
+        return new Token(text, DOUBLEQUOTED);
+    }
+
+    private Token buildNum() {
+        char c;
+        String text;
+        while ((c = reader.nextChar()) >= 48 && c <= 57) {
+            builder.append(c);
+        }
+        next = ATTR_NAME;
+        text = builder.toString();
+        builder = new StringBuilder();
+        builder.append(c);
+        return new Token(text, NUM);
+    }
+
+    private Token buildContent() throws GrammarException {
+        char c;
+        c = truncate();
+        builder.append(c);
+        if (c == '<') {
+            next = TAGOPEN_LEFT;
+            return buildTagopenLeft();
+        } else if (c != 0){
+            next = TEXT;
+            return buildText();
+        } else {
+            return new Token(builder.toString(), END_OF_TEXT);
+        }
     }
 
     private Token buildText() throws GrammarException {

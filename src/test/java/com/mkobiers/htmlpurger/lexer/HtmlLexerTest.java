@@ -25,7 +25,7 @@ public class HtmlLexerTest {
         List<Token> tokens = new ArrayList<>();
         while (!(t = htmlLexer.nextToken()).getType().equals(END_OF_TEXT)) {
             tokens.add(t);
-            System.out.println(t.getText());
+            System.out.println(t.getType() + "  " + t.getText());
         }
 
         List<TokenType> expected = Arrays.asList(TAGNAME, LEFT_BRACE, RULE, COMMA, RULE, RIGHT_BRACE, TAGNAME, LEFT_BRACE, RULE, RIGHT_BRACE);
