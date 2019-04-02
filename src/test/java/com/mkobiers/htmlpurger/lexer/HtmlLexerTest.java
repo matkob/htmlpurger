@@ -15,16 +15,17 @@ import java.util.stream.Collectors;
 
 import static com.mkobiers.htmlpurger.model.TokenType.*;
 
-public class ConfigLexerTest {
+public class HtmlLexerTest {
 
     @Test
     public void givenKnownConfigFileIsLexerReturningTokens() throws GrammarException {
-        IReader reader = new FileReader("lexertestconfig.txt");
-        ConfigLexer configLexer = new ConfigLexer(reader);
+        IReader reader = new FileReader("lexertesthtml.txt");
+        HtmlLexer htmlLexer = new HtmlLexer(reader);
         Token t;
         List<Token> tokens = new ArrayList<>();
-        while (!(t = configLexer.nextToken()).getType().equals(END_OF_TEXT)) {
+        while (!(t = htmlLexer.nextToken()).getType().equals(END_OF_TEXT)) {
             tokens.add(t);
+            System.out.println(t.getText());
         }
 
         List<TokenType> expected = Arrays.asList(TAGNAME, LEFT_BRACE, RULE, COMMA, RULE, RIGHT_BRACE, TAGNAME, LEFT_BRACE, RULE, RIGHT_BRACE);

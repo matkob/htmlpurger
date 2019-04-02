@@ -47,7 +47,7 @@ public class ConfigLexer {
         }
 
         while ((c = reader.nextChar()) != '{' && c != 0) {
-            if (c != ' ' && c != '\n' && c != '\t') {
+            if (c != ' ' && c != '\n' && c != '\t' && c != '\r') {
                 builder.append(c);
             }
         }
@@ -71,7 +71,7 @@ public class ConfigLexer {
         }
 
         while ((c = reader.nextChar()) != '}' && c != ',' && c != 0) {
-            if (c != ' ' && c != '\n' && c != '\t') {
+            if (c != ' ' && c != '\n' && c != '\t' && c != '\r') {
                 builder.append(c);
             }
         }
@@ -130,7 +130,7 @@ public class ConfigLexer {
 
     private char truncate() {
         char c;
-        while ((c = reader.nextChar()) == ' ' || c == '\n' || c == '\t');
+        while ((c = reader.nextChar()) == ' ' || c == '\n' || c == '\t' || c == '\r');
         return c;
     }
 }
