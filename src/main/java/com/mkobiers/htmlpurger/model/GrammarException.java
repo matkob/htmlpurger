@@ -5,7 +5,7 @@ public class GrammarException extends Exception {
     private int col;
     private int row;
 
-    public GrammarException(String message, int col, int row) {
+    public GrammarException(int row, int col, String message) {
         this.message = message;
         this.col = col;
         this.row = row;
@@ -13,7 +13,7 @@ public class GrammarException extends Exception {
 
     @Override
     public String getMessage() {
-        return message;
+        return "at position " + row + "," + col + " \"" + message + "\"";
     }
 
     public int getCol() {

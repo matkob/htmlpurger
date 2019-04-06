@@ -13,8 +13,8 @@ public class FileReader implements IReader {
     private char current;
     private String lastTen;
 
-    private int column = -1;
-    private int row = 0;
+    private int column = 0;
+    private int row = 1;
 
     public FileReader(String filename) {
         this.lastTen = "  ";
@@ -33,17 +33,16 @@ public class FileReader implements IReader {
     public char nextChar() {
         try {
             int r = reader.read();
-            lastTen = lastTen.length() < 10 ? lastTen + (char) r : (lastTen + (char) r).substring(1);
             if (r != -1) {
                 char ch = (char) r;
                 if (ch == '\n') {
                     row++;
-                    column = 0;
+                    column = 1;
                 } else {
                     column++;
+                    lastTen = lastTen.length() < 10 ? lastTen + ch : (lastTen + ch).substring(1);
                 }
                 current = ch;
-                System.out.println("col: " + column + " row: " + row + " char: " + ch);
                 return ch;
             } else {
                 return 0;

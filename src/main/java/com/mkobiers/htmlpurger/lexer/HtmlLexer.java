@@ -51,7 +51,7 @@ public class HtmlLexer {
             builder.append(c);
             return buildTagopenLeft();
         }
-        throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
+        throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
     }
 
     private Token buildTagopenLeft() throws GrammarException {
@@ -78,6 +78,9 @@ public class HtmlLexer {
         char c;
         String text;
         while ((c = reader.nextChar()) != ' ' && c != '>') {
+            if (isWhiteChar(c)) {
+                throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            }
             builder.append(c);
         }
         if (c == ' ') {
@@ -122,7 +125,7 @@ public class HtmlLexer {
             builder.append(c);
             return new Token(text, TAGCLOSE_NAME);
         }
-        throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
+        throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
     }
 
     private Token buildAttrName() throws GrammarException {
@@ -156,7 +159,7 @@ public class HtmlLexer {
             next = NUM;
             return buildNum();
         }
-        throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
+        throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
     }
 
     private Token buildEquals() {
@@ -179,7 +182,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
         text = builder.toString();
         builder = new StringBuilder();
@@ -200,7 +203,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
         text = builder.toString();
         builder = new StringBuilder();
@@ -219,7 +222,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
         text = builder.toString();
         builder = new StringBuilder();
@@ -261,6 +264,10 @@ public class HtmlLexer {
         char c;
         while ((c = reader.nextChar()) == ' ' || c == '\n' || c == '\t' || c == '\r');
         return c;
+    }
+
+    private boolean isWhiteChar(char c) {
+        return c == ' ' || c == '\n' || c == '\t' || c == '\r';
     }
 
 }
