@@ -1,5 +1,5 @@
 <HTML> 
-<HEAD> 
+<HEAD
 <TITLE>Your Title Here</TITLE> 
 </HEAD> 
 <BODY STYLE="background-color: blue;">

@@ -27,7 +27,7 @@ public class HtmlLexer {
             case TAGOPEN_RIGHT: return buildTagopenRight();
             case TAGOPEN_NAME: return buildTagopenName();
 
-            case TAGCLOSE_LEFT: return buildTagopenLeft();
+            case TAGCLOSE_LEFT: return buildTagcloseLeft();
             case TAGCLOSE_RIGHT: return buildTagcloseRight();
             case TAGCLOSE_NAME: return buildTagcloseName();
 
@@ -36,7 +36,7 @@ public class HtmlLexer {
             case VALUE: return buildValue();
 
             case CONTENT: return buildContent();
-            case SINGLEQUOTED: return buildDoublequoted();
+            case SINGLEQUOTED: return buildSinglequoted();
             case DOUBLEQUOTED: return buildDoublequoted();
             case NUM: return buildNum();
             case TEXT: return buildText();
@@ -51,7 +51,7 @@ public class HtmlLexer {
             builder.append(c);
             return buildTagopenLeft();
         }
-        throw new GrammarException();
+        throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
     }
 
     private Token buildTagopenLeft() throws GrammarException {
@@ -122,7 +122,7 @@ public class HtmlLexer {
             builder.append(c);
             return new Token(text, TAGCLOSE_NAME);
         }
-        throw new GrammarException();
+        throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
     }
 
     private Token buildAttrName() throws GrammarException {
@@ -156,7 +156,7 @@ public class HtmlLexer {
             next = NUM;
             return buildNum();
         }
-        throw new GrammarException();
+        throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
     }
 
     private Token buildEquals() {
@@ -179,7 +179,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException();
+            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
         }
         text = builder.toString();
         builder = new StringBuilder();
@@ -200,7 +200,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException();
+            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
         }
         text = builder.toString();
         builder = new StringBuilder();
@@ -219,7 +219,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException();
+            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
         }
         text = builder.toString();
         builder = new StringBuilder();

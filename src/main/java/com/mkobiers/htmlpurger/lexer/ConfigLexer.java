@@ -43,7 +43,7 @@ public class ConfigLexer {
         } else if (c == 0) {
             return null;
         } else {
-            throw new GrammarException();
+            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
         }
 
         while ((c = reader.nextChar()) != '{' && c != 0) {
@@ -58,7 +58,7 @@ public class ConfigLexer {
             builder.append(c);
             return new Token(text, TAGNAME);
         }
-        throw new GrammarException();
+        throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
     }
 
     private Token buildRule() throws GrammarException {
@@ -67,7 +67,7 @@ public class ConfigLexer {
         if (c >= 'a') {
             builder.append(c);
         } else {
-            throw new GrammarException();
+            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
         }
 
         while ((c = reader.nextChar()) != '}' && c != ',' && c != 0) {
@@ -80,12 +80,12 @@ public class ConfigLexer {
         } else if (c == ',') {
             current = COMMA;
         } else {
-            throw new GrammarException();
+            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
         }
 
         text = builder.toString();
         if (!isRuleSupported(text)) {
-            throw new GrammarException();
+            throw new GrammarException(reader.getErrorMessage(), reader.getColumn(), reader.getRow());
         }
         builder = new StringBuilder();
         builder.append(c);
