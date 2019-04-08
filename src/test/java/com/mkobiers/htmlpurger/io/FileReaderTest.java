@@ -28,7 +28,7 @@ public class FileReaderTest {
 
     @Test
     void rewindTest() {
-        IReader reader = new FileReader("lexertestconfig.txt");
+        IReader reader = new FileReader("correct.txt");
         char first = reader.nextChar();
         reader.rewind();
         char second = reader.nextChar();
