@@ -11,6 +11,7 @@ public class FileReader implements IReader {
     private Logger logger = LoggerFactory.getLogger(FileReader.class);
     private Reader reader;
     private char current;
+    private boolean takeLast;
     private String lastTen;
 
     private int column = 0;
@@ -18,6 +19,7 @@ public class FileReader implements IReader {
 
     public FileReader(String filename) {
         this.lastTen = "  ";
+        this.takeLast = false;
         try {
             Charset encoding = Charset.defaultCharset();
             InputStream in = new FileInputStream(new File(filename));
@@ -32,6 +34,10 @@ public class FileReader implements IReader {
     @Override
     public char nextChar() {
         try {
+            if (takeLast && current != 0) {
+                takeLast = false;
+                return current;
+            }
             int r = reader.read();
             if (r != -1) {
                 char ch = (char) r;
@@ -60,6 +66,11 @@ public class FileReader implements IReader {
     @Override
     public char getChar() {
         return current;
+    }
+
+    @Override
+    public void rewind() {
+        this.takeLast = true;
     }
 
     @Override

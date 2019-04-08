@@ -25,4 +25,13 @@ public class FileReaderTest {
         Assertions.assertEquals(c, reader.getChar());
         Assertions.assertEquals('b', reader.nextChar());
     }
+
+    @Test
+    void rewindTest() {
+        IReader reader = new FileReader("lexertestconfig.txt");
+        char first = reader.nextChar();
+        reader.rewind();
+        char second = reader.nextChar();
+        Assertions.assertEquals(first, second);
+    }
 }
