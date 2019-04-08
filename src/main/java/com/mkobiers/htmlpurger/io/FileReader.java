@@ -38,6 +38,10 @@ public class FileReader implements IReader {
                 if (ch == '\n') {
                     row++;
                     column = 1;
+                    return nextChar();
+                } else if (ch == '\r') {
+                    column = 1;
+                    return nextChar();
                 } else {
                     column++;
                     lastTen = lastTen.length() < 10 ? lastTen + ch : (lastTen + ch).substring(1);
@@ -69,6 +73,8 @@ public class FileReader implements IReader {
                 }
                 if (c != '\n' && c != '\r' && c != '\t') {
                     builder.append((char) c);
+                } else {
+                    i--;
                 }
             }
             return lastTen + builder.toString();

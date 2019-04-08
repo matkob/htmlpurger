@@ -25,4 +25,12 @@ public class Token {
     public void setType(TokenType type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "text='" + text + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }

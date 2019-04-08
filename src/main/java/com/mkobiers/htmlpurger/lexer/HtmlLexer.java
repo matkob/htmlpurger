@@ -62,9 +62,12 @@ public class HtmlLexer {
             next = TAGCLOSE_LEFT;
             return buildTagcloseLeft();
         }
-        next = TAGOPEN_NAME;
-        builder.deleteCharAt(0);
-        return new Token(text, TAGOPEN_LEFT);
+        if (isAlpha(c)) {
+            next = TAGOPEN_NAME;
+            builder.deleteCharAt(0);
+            return new Token(text, TAGOPEN_LEFT);
+        }
+        throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
     }
 
     private Token buildTagopenRight() throws GrammarException {
@@ -75,25 +78,25 @@ public class HtmlLexer {
     }
 
     private Token buildTagopenName() throws GrammarException {
-        char c;
         String text;
-        while ((c = reader.nextChar()) != ' ' && c != '>') {
-            if (isWhiteChar(c)) {
-                throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
-            }
+        char c;
+        while (isAlphaNum(c = reader.nextChar())) {
             builder.append(c);
         }
         if (c == ' ') {
             next = ATTR_NAME;
             text = builder.toString();
             builder = new StringBuilder();
-        } else {
+            return new Token(text, TAGOPEN_NAME);
+        } else if(c == '>') {
             next = TAGOPEN_RIGHT;
             text = builder.toString();
             builder = new StringBuilder();
             builder.append(c);
+            return new Token(text, TAGOPEN_NAME);
+        } else {
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
-        return new Token(text, TAGOPEN_NAME);
     }
 
     private Token buildTagcloseLeft() throws GrammarException {
@@ -101,7 +104,7 @@ public class HtmlLexer {
         next = TAGCLOSE_NAME;
         text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, CLOSETAG);
+        return new Token(text, TAGCLOSE_LEFT);
     }
 
     private Token buildTagcloseRight() throws GrammarException {
@@ -112,12 +115,18 @@ public class HtmlLexer {
     }
 
     private Token buildTagcloseName() throws GrammarException {
-        char c = truncate();
         String text;
+        char c = reader.nextChar();
+        if (!isAlpha(c)) {
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+        }
         if (c != '>') {
             builder.append(c);
-            while ((c = reader.nextChar()) != '>') {
+            while ((c = reader.nextChar()) != '>' && c != '<' && !isWhiteChar(c)) {
                 builder.append(c);
+            }
+            if (isWhiteChar(c) || c == '<') {
+                throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
             }
             next = TAGCLOSE_RIGHT;
             text = builder.toString();
@@ -214,7 +223,7 @@ public class HtmlLexer {
     private Token buildNum() throws GrammarException {
         char c;
         String text;
-        while ((c = reader.nextChar()) >= 48 && c <= 57) {
+        while (isNum(c = reader.nextChar())) {
             builder.append(c);
         }
         if (c == '>') {
@@ -253,7 +262,7 @@ public class HtmlLexer {
                 builder.append(c);
             }
         }
-        next = TAGCLOSE_LEFT;
+        next = TAGOPEN_LEFT;
         text = builder.toString();
         builder = new StringBuilder();
         builder.append(c);
@@ -268,6 +277,18 @@ public class HtmlLexer {
 
     private boolean isWhiteChar(char c) {
         return c == ' ' || c == '\n' || c == '\t' || c == '\r';
+    }
+
+    private boolean isAlpha(char c) {
+        return (c > 64 && c < 91) || (c > 96 && c < 123);
+    }
+
+    private boolean isNum(char c) {
+        return c > 47 && c < 58;
+    }
+
+    private boolean isAlphaNum(char c) {
+        return isAlpha(c) || isNum(c);
     }
 
 }
