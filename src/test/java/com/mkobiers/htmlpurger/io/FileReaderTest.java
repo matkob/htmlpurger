@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 
 public class FileReaderTest {
 
+    private static final String FILEPATH_PREFIX = "test_files/reader/";
+
     @Test
     void givenKnownFileAreCharsRead() {
-        IReader reader = new FileReader("test.txt");
+        IReader reader = new FileReader(FILEPATH_PREFIX + "test.txt");
 
         StringBuilder builder = new StringBuilder();
         char c;
@@ -20,7 +22,7 @@ public class FileReaderTest {
 
     @Test
     void givenReadCharIsItSavedInClass() {
-        IReader reader = new FileReader("test.txt");
+        IReader reader = new FileReader(FILEPATH_PREFIX + "test.txt");
         char c = reader.nextChar();
         Assertions.assertEquals(c, reader.getChar());
         Assertions.assertEquals('b', reader.nextChar());
@@ -28,7 +30,7 @@ public class FileReaderTest {
 
     @Test
     void rewindTest() {
-        IReader reader = new FileReader("correct.txt");
+        IReader reader = new FileReader(FILEPATH_PREFIX + "test.txt");
         char first = reader.nextChar();
         reader.rewind();
         char second = reader.nextChar();
