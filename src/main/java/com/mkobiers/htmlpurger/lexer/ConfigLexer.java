@@ -19,108 +19,95 @@ public class ConfigLexer {
         this.builder = new StringBuilder();
     }
 
-    public Token nextToken() throws GrammarException {
+    public Token nextToken() throws Exception {
         switch (current) {
-            case TAGNAME:
-                Token tagname = buildTagname();
-                if (tagname != null) {
-                    return tagname;
-                }
-                break;
+            case TAGNAME: return buildTagname();
             case LEFT_BRACE: return buildLeftbrace();
             case RULE: return buildRule();
             case COMMA: return buildComma();
             case RIGHT_BRACE: return buildRightbrace();
         }
-        return buildEnd();
+        throw new Exception("No matching state found");
     }
 
     private Token buildTagname() throws GrammarException {
         String text;
         char c = truncate();
-        if (c >= 'A') {
-            builder.append(c);
-        } else if (c == 0) {
-            return null;
-        } else {
+        if (c == 0) {
+            text = builder.toString();
+            return new Token(text, END_OF_TEXT);
+        }
+        if (!isAlpha(c)) {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
-
-        while ((c = reader.nextChar()) != '{' && c != 0) {
-            if (c != ' ' && c != '\n' && c != '\t' && c != '\r') {
-                builder.append(c);
-            }
-        }
-        if (c == '{') {
-            text = builder.toString();
-            current = LEFT_BRACE;
-            builder = new StringBuilder();
+        builder.append(c);
+        while (isAlphaNum(c = reader.nextChar())) {
             builder.append(c);
-            return new Token(text, TAGNAME);
         }
-        throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+        reader.rewind();
+        current = LEFT_BRACE;
+        text = builder.toString();
+        builder = new StringBuilder();
+        return new Token(text, TAGNAME);
     }
 
     private Token buildRule() throws GrammarException {
         String text;
         char c = truncate();
-        if (c >= 'a') {
+        if (isAlpha(c)) {
             builder.append(c);
         } else {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
-
-        while ((c = reader.nextChar()) != '}' && c != ',' && c != 0) {
-            if (c != ' ' && c != '\n' && c != '\t' && c != '\r') {
-                builder.append(c);
-            }
+        while (isAlpha(c = reader.nextChar())) {
+            builder.append(c);
         }
-        if (c == '}') {
-            current = RIGHT_BRACE;
-        } else if (c == ',') {
+        if (c == ',') {
+            reader.rewind();
             current = COMMA;
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            reader.rewind();
+            current = RIGHT_BRACE;
         }
-
         text = builder.toString();
         if (!isRuleSupported(text)) {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
         builder = new StringBuilder();
-        builder.append(c);
         return new Token(text, RULE);
     }
 
-    private Token buildComma() {
-        String text;
-        text = builder.toString();
+    private Token buildComma() throws GrammarException {
+        char c = reader.nextChar();
+        if (c != ',') {
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+        }
         current = RULE;
+        String text = builder.toString();
         builder = new StringBuilder();
         return new Token(text, COMMA);
     }
 
-    private Token buildLeftbrace() {
-        String text;
-        text = builder.toString();
+    private Token buildLeftbrace() throws GrammarException {
+        char c = truncate();
+        if (c != '{') {
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+        }
         current = RULE;
+        String text = builder.toString();
         builder = new StringBuilder();
         return new Token(text, LEFT_BRACE);
     }
 
-    private Token buildRightbrace() {
-        String text;
-        text = builder.toString();
+    private Token buildRightbrace() throws GrammarException {
+        char c = truncate();
+        if (c != '}') {
+            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+        }
         current = TAGNAME;
+        String text = builder.toString();
         builder = new StringBuilder();
         return new Token(text, RIGHT_BRACE);
-    }
-
-    private Token buildEnd() {
-        String text;
-        text = builder.toString();
-        current = END_OF_TEXT;
-        return new Token(text, END_OF_TEXT);
     }
     
     private boolean isRuleSupported(String text) {
@@ -130,7 +117,19 @@ public class ConfigLexer {
 
     private char truncate() {
         char c;
-        while ((c = reader.nextChar()) == ' ' || c == '\n' || c == '\t' || c == '\r');
+        while ((c = reader.nextChar()) == ' ' || c == '\t');
         return c;
+    }
+
+    private boolean isAlpha(char c) {
+        return (c > 64 && c < 91) || (c > 96 && c < 123);
+    }
+
+    private boolean isNum(char c) {
+        return c > 47 && c < 58;
+    }
+
+    private boolean isAlphaNum(char c) {
+        return isAlpha(c) || isNum(c);
     }
 }

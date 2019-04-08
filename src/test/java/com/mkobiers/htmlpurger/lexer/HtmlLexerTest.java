@@ -2,7 +2,6 @@ package com.mkobiers.htmlpurger.lexer;
 
 import com.mkobiers.htmlpurger.io.FileReader;
 import com.mkobiers.htmlpurger.io.IReader;
-import com.mkobiers.htmlpurger.model.GrammarException;
 import com.mkobiers.htmlpurger.model.Token;
 import com.mkobiers.htmlpurger.model.TokenType;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +17,7 @@ import static com.mkobiers.htmlpurger.model.TokenType.*;
 public class HtmlLexerTest {
 
     @Test
-    public void givenKnownConfigFileIsLexerReturningTokens() throws GrammarException {
+    public void givenKnownConfigFileIsLexerReturningTokens() throws Exception {
         IReader reader = new FileReader("lexertesthtml.txt");
         HtmlLexer htmlLexer = new HtmlLexer(reader);
         Token t;
