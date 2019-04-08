@@ -48,7 +48,7 @@ public class ConfigLexerTest {
     }
 
     @Test
-    public void givenConfigFileWithNotSupportedRulesDoesLexerThrow() throws Exception {
+    public void givenConfigFileWithNotSupportedRulesDoesLexerThrow() {
         Assertions.assertThrows(GrammarException.class, () -> {
             IReader reader = new FileReader(FILEPATH_PREFIX + "not_supported.txt");
             ConfigLexer configLexer = new ConfigLexer(reader);
@@ -61,7 +61,7 @@ public class ConfigLexerTest {
     }
 
     @Test
-    public void givenConfigFileSuddenEndDoesLexerThrow() throws Exception {
+    public void givenConfigFileSuddenEndDoesLexerThrow() {
         Assertions.assertThrows(GrammarException.class, () -> {
             IReader reader = new FileReader(FILEPATH_PREFIX + "sudden_end.txt");
             ConfigLexer configLexer = new ConfigLexer(reader);

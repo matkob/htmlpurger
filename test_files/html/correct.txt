@@ -1,0 +1,10 @@
+<HTML>
+<HEAD>
+<TITLE>Your Title Here</TITLE>
+</HEAD>
+<BODY STYLE="background-color: blue;">
+<IMG SRC="clouds.jpg" ALIGN='BOTTOM'>
+<a href="http://somegreatsite.com">Link Name</a>
+Some text
+</BODY>
+</HTML>
