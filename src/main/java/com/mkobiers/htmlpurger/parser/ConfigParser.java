@@ -34,7 +34,7 @@ public class ConfigParser {
         }
 
         try {
-            Iterator<Token> it = tokens.iterator();
+            ListIterator<Token> it = tokens.listIterator();
             while (it.hasNext()) {
                 ConfigEntry configEntry = buildConfigEntry(it);
                 rules.put(configEntry.getTagname(), configEntry.getRules());
@@ -45,7 +45,7 @@ public class ConfigParser {
         return rules;
     }
 
-    private ConfigEntry buildConfigEntry(Iterator<Token> it) throws Exception {
+    private ConfigEntry buildConfigEntry(ListIterator<Token> it) throws Exception {
         ConfigEntry configEntry = new ConfigEntry(getNextToken(it, TAGNAME));
         getNextToken(it, LEFT_BRACE);
         Token rule;
@@ -60,7 +60,7 @@ public class ConfigParser {
         return configEntry;
     }
 
-    private Token getNextToken(Iterator<Token> it, TokenType type) throws Exception {
+    private Token getNextToken(ListIterator<Token> it, TokenType type) throws Exception {
         Token t;
         if (!(t = it.next()).getType().equals(type)) {
             throw new ParsingException();

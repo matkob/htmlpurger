@@ -31,14 +31,14 @@ public class Token {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Token) {
-            return ((Token) obj).getType().equals(type) && ((Token) obj).getText().equals(text);
+            return ((Token) obj).getType().equals(type) && ((Token) obj).getText().equalsIgnoreCase(text);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, type);
+        return Objects.hash(text.toLowerCase(), type);
     }
 
     @Override
