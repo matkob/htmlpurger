@@ -82,6 +82,7 @@ public class ConfigLexer {
         if (c != ',') {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
+        builder.append(c);
         current = RULE;
         String text = builder.toString();
         builder = new StringBuilder();
@@ -93,6 +94,7 @@ public class ConfigLexer {
         if (c != '{') {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
+        builder.append(c);
         current = RULE;
         String text = builder.toString();
         builder = new StringBuilder();
@@ -104,6 +106,7 @@ public class ConfigLexer {
         if (c != '}') {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
+        builder.append(c);
         current = TAGNAME;
         String text = builder.toString();
         builder = new StringBuilder();
