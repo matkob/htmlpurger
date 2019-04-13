@@ -1,5 +1,7 @@
 package com.mkobiers.htmlpurger.model;
 
+import java.util.Objects;
+
 public class Token {
 
     private String text;
@@ -24,6 +26,19 @@ public class Token {
 
     public void setType(TokenType type) {
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Token) {
+            return ((Token) obj).getType().equals(type) && ((Token) obj).getText().equals(text);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, type);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.mkobiers.htmlpurger.model;
+package com.mkobiers.htmlpurger.model.exception;
 
 public class GrammarException extends Exception {
     private String message;

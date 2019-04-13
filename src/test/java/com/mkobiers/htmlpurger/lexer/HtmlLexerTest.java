@@ -2,9 +2,9 @@ package com.mkobiers.htmlpurger.lexer;
 
 import com.mkobiers.htmlpurger.io.FileReader;
 import com.mkobiers.htmlpurger.io.IReader;
-import com.mkobiers.htmlpurger.model.GrammarException;
 import com.mkobiers.htmlpurger.model.Token;
 import com.mkobiers.htmlpurger.model.TokenType;
+import com.mkobiers.htmlpurger.model.exception.GrammarException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
