@@ -233,6 +233,7 @@ public class HtmlLexer {
         if (c != '\"') {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
+        builder.append(c);
         while (isPrintable(c = reader.nextChar()) && c != '\"') {
             builder.append(c);
         }

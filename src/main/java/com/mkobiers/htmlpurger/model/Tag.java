@@ -3,34 +3,45 @@ package com.mkobiers.htmlpurger.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tag {
-    private Token name;
-    private List<Token> attributes;
-    private List<Tag> content;
+public class Tag extends Content {
+    private Opentag opentag;
+    private List<Content> content;
+    private Closetag closetag;
 
-    public Tag(Token name) {
-        this.name = name;
-        this.attributes = new ArrayList<>();
+    public Tag() {
         this.content = new ArrayList<>();
     }
 
-    public Token getName() {
-        return name;
+    public Opentag getOpentag() {
+        return opentag;
     }
 
-    public List<Token> getAttributes() {
-        return attributes;
+    public void setOpentag(Opentag opentag) {
+        this.opentag = opentag;
     }
 
-    public boolean addAttribute(Token token) {
-        return attributes.add(token);
-    }
-
-    public List<Tag> getContent() {
+    public List<Content> getContent() {
         return content;
     }
 
-    public boolean addContent(Tag tag) {
-        return content.add(tag);
+    public boolean addContent(Content content) {
+        return this.content.add(content);
+    }
+
+    public Closetag getClosetag() {
+        return closetag;
+    }
+
+    public void setClosetag(Closetag closetag) {
+        this.closetag = closetag;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder contentBuilder = new StringBuilder();
+        content.forEach(c -> contentBuilder.append(c.toString()));
+        return opentag.toString() + "\n" +
+                contentBuilder.toString() +
+                closetag.toString() + "\n";
     }
 }
