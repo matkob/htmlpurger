@@ -30,115 +30,110 @@ public class HtmlParser {
             tokens.add(t);
         }
 
-        ListIterator<Token> begin = tokens.listIterator();
-        return buildTag(begin);
+        ListIterator<Token> end = tokens.listIterator(tokens.size());
+        return buildTag(end);
     }
 
-    private Tag buildTag(ListIterator<Token> begin) throws Exception {
+    private Tag buildTag(ListIterator<Token> end) throws Exception {
         Tag tag = new Tag();
-        Opentag opentag = buildOpentag(begin);
-        tag.setOpentag(opentag);
+        tag.setClosetag(buildClosetag(end));
 
-        while (begin.hasNext()) {
-            Token t = begin.next();
-            if (t.getType().equals(TAGOPEN_LEFT)) {
-                boolean standalone = isStandalone(begin.next());
-                begin.previous();
-                begin.previous();
-                tag.addContent(standalone ? new TagStandalone(buildOpentag(begin)) : buildTag(begin));
+        while (end.hasPrevious()) {
+            Token t = end.previous();
+            if (t.getType().equals(TAGCLOSE_RIGHT)) {
+                end.next();
+                tag.addContent(buildTag(end));
             } else if (t.getType().equals(TEXT)) {
                 tag.addContent(new Text(t));
-            } else if (t.getType().equals(TAGCLOSE_LEFT)) {
-                begin.previous();
-                break;
+            } else if (t.getType().equals(TAGOPEN_RIGHT)) {
+                end.next();
+                Opentag opentag = buildOpentag(end);
+                if (opentag.getName().getText().equals(tag.getClosetag().getName().getText())) {
+                    tag.setOpentag(opentag);
+                    break;
+                } else {
+                    tag.addContent(new TagStandalone(opentag));
+                }
             }
         }
-
-        tag.setClosetag(buildClosetag(begin));
         return tag;
     }
 
     private Opentag buildOpentag(ListIterator<Token> it) throws ParsingException {
         Opentag opentag = new Opentag();
-        Token leftBrace;
-        if (!it.hasNext() || !(leftBrace = it.next()).getType().equals(TAGOPEN_LEFT)) {
+        Token rightBrace;
+        if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGOPEN_RIGHT)) {
             throw new ParsingException();
         }
-        opentag.setLeftBrace(leftBrace);
+        opentag.setRightBrace(rightBrace);
+
+        opentag.setAttributes(buildAttributes(it));
+
         Token name;
-        if (!it.hasNext() || !(name = it.next()).getType().equals(TAGOPEN_NAME)) {
+        if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGOPEN_NAME)) {
             throw new ParsingException();
         }
         opentag.setName(name);
-        Attribute attr = null;
-        Token t = null;
-        while (it.hasNext() && !(t = it.next()).getType().equals(TAGOPEN_RIGHT)) {
-            switch (t.getType()) {
-                case ATTR_NAME:
-                    if (attr != null) {
-                        opentag.addAttribute(attr);
-                    }
-                    attr = new Attribute();
-                    attr.setName(t);
-                    break;
-                case EQUALS:
-                    attr.setEquals(t);
-                    attr.setHasValue(true);
-                    break;
-                case SINGLEQUOTED:
-                case DOUBLEQUOTED:
-                case NUM:
-                    attr.setValue(t);
-                    opentag.addAttribute(attr);
-                    attr = null;
-                    break;
-            }
-        }
-        if (t == null || !t.getType().equals(TAGOPEN_RIGHT)) {
+
+        Token leftBrace;
+        if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGOPEN_LEFT)) {
             throw new ParsingException();
         }
-        opentag.setRightBrace(t);
+        opentag.setLeftBrace(leftBrace);
 
         return opentag;
     }
 
     private Closetag buildClosetag(ListIterator<Token> it) throws ParsingException {
         Closetag closetag = new Closetag();
-        Token leftBrace;
-        if (!it.hasNext() || !(leftBrace = it.next()).getType().equals(TAGCLOSE_LEFT)) {
-            throw new ParsingException();
-        }
-        closetag.setLeftBrace(leftBrace);
-        Token name;
-        if (!it.hasNext() || !(name = it.next()).getType().equals(TAGCLOSE_NAME)) {
-            throw new ParsingException();
-        }
-        closetag.setName(name);
         Token rightBrace;
-        if (!it.hasNext() || !(rightBrace = it.next()).getType().equals(TAGCLOSE_RIGHT)) {
+        if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGCLOSE_RIGHT)) {
             throw new ParsingException();
         }
         closetag.setRightBrace(rightBrace);
+        Token name;
+        if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGCLOSE_NAME)) {
+            throw new ParsingException();
+        }
+        closetag.setName(name);
+        Token leftBrace;
+        if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGCLOSE_LEFT)) {
+            throw new ParsingException();
+        }
+        closetag.setLeftBrace(leftBrace);
 
         return closetag;
     }
 
-    private boolean isStandalone(Token t) {
-        return t.getText().equalsIgnoreCase("area")
-                || t.getText().equalsIgnoreCase("base")
-                || t.getText().equalsIgnoreCase("br")
-                || t.getText().equalsIgnoreCase("col")
-                || t.getText().equalsIgnoreCase("command")
-                || t.getText().equalsIgnoreCase("embed")
-                || t.getText().equalsIgnoreCase("hr")
-                || t.getText().equalsIgnoreCase("img")
-                || t.getText().equalsIgnoreCase("input")
-                || t.getText().equalsIgnoreCase("keygen")
-                || t.getText().equalsIgnoreCase("link")
-                || t.getText().equalsIgnoreCase("meta")
-                || t.getText().equalsIgnoreCase("param")
-                || t.getText().equalsIgnoreCase("source")
-                || t.getText().equalsIgnoreCase("track")
-                || t.getText().equalsIgnoreCase("wbr");
+    private List<Attribute> buildAttributes(ListIterator<Token> it) {
+        List<Attribute> attributes = new ArrayList<>();
+
+        Token t;
+        Token equals = null;
+        Token value = null;
+        while (it.hasPrevious() && !(t = it.previous()).getType().equals(TAGOPEN_NAME)) {
+            switch (t.getType()) {
+                case ATTR_NAME:
+                    Attribute attribute = new Attribute();
+                    if (equals != null && value != null) {
+                        attribute.setHasValue(true);
+                        attribute.setEquals(equals);
+                        attribute.setValue(value);
+                    }
+                    attribute.setName(t);
+                    attributes.add(attribute);
+                    break;
+                case EQUALS:
+                    equals = t;
+                    break;
+                case SINGLEQUOTED:
+                case DOUBLEQUOTED:
+                case NUM:
+                    value = t;
+                    break;
+            }
+        }
+        it.next();
+        return attributes;
     }
 }

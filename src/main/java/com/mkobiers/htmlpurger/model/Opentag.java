@@ -33,6 +33,10 @@ public class Opentag {
         return attributes;
     }
 
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
     public boolean addAttribute(Attribute attribute) {
         return this.attributes.add(attribute);
     }

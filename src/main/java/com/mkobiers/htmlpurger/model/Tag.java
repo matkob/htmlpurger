@@ -24,8 +24,8 @@ public class Tag extends Content {
         return content;
     }
 
-    public boolean addContent(Content content) {
-        return this.content.add(content);
+    public void addContent(Content content) {
+        this.content.add(0, content);
     }
 
     public Closetag getClosetag() {
