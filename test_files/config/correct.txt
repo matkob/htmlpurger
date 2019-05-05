@@ -3,6 +3,10 @@ HTML
     font, color
 }
 
+TITLE {
+    remove
+}
+
 BODY {
-    text
+    text, color
 }

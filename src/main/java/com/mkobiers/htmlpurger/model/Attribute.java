@@ -18,7 +18,7 @@ public class Attribute {
         this.name = name;
     }
 
-    public boolean isHasValue() {
+    public boolean hasValue() {
         return hasValue;
     }
 

@@ -2,7 +2,11 @@ package com.mkobiers.htmlpurger.model;
 
 import java.util.Objects;
 
+import static com.mkobiers.htmlpurger.model.TokenType.RULE;
+
 public class Token {
+    public final static Token REMOVE = new Token("remove", RULE);
+    public final static Token ALL = new Token("all", RULE);
 
     private String text;
     private TokenType type;

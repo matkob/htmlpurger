@@ -1,6 +1,5 @@
 package com.mkobiers.htmlpurger;
 
-import com.mkobiers.htmlpurger.logic.HtmlFilter;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,7 @@ public class HtmlPurgerApp {
         options.addOption("c", "conf", true, "source of config file");
         options.addOption("h", "help", false, "displays this message");
 
-        HtmlFilter filter = new HtmlFilter();
+//        HtmlPurger filter = new HtmlPurger();
 
         try {
             CommandLineParser parser = new DefaultParser();
