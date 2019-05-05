@@ -27,8 +27,8 @@ public class ConfigParser {
 
     public Map<Token, List<Token>> parseConfig() throws Exception {
         logger.info("parsing config file");
-        Token t;
         List<Token> tokens = new ArrayList<>();
+        Token t;
         while (!(t = lexer.nextToken()).getType().equals(END_OF_TEXT)) {
             tokens.add(t);
         }

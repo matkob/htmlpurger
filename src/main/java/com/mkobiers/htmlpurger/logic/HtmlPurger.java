@@ -32,14 +32,19 @@ public class HtmlPurger {
 
     public void process() throws Exception {
         Map<Token, List<Token>> config = configParser.parseConfig();
+        //TODO: info about unused rules
         Tag root = htmlParser.parseHtml();
+        logger.info("processing html file");
         applyRules(config, root);
+        logger.info("creating output file");
         writer.write(root.toString());
         writer.close();
+        logger.info("output file created");
     }
 
     private void applyRules(Map<Token, List<Token>> config, Tag tag) {
         if (config.containsKey(tag.getTagname())) {
+            logger.info("applying rules to {}", tag.getOpentag().getName().getText());
             List<Token> rules = config.get(tag.getTagname());
             if (rules.contains(Token.REMOVE)) {
                 removeTag(tag);
@@ -48,6 +53,8 @@ public class HtmlPurger {
             } else {
                 filterDecorators(tag, rules);
             }
+        } else {
+            logger.info("no rules found for {}", tag.getOpentag().getName().getText());
         }
         tag.getContent().stream()
                 .filter(content -> content instanceof Tag)
@@ -56,12 +63,14 @@ public class HtmlPurger {
     }
 
     private void removeTag(Tag tag) {
+        logger.info("removing {}", tag.getOpentag().getName().getText());
         tag.setOpentag(null);
         tag.setContent(new ArrayList<>());
         tag.setClosetag(null);
     }
 
     private void removeAll(Tag tag) {
+        logger.info("removing all {} styles", tag.getOpentag().getName().getText());
         List<Attribute> attributes = tag.getOpentag().getAttributes();
         attributes = attributes.stream()
                 .filter(attr -> !attr.getName().equals(new Token("style", ATTR_NAME)))
@@ -70,6 +79,7 @@ public class HtmlPurger {
     }
 
     private void filterDecorators(Tag tag, List<Token> rules) {
+        logger.info("purging {} styles", tag.getOpentag().getName().getText());
         List<Attribute> attributes = tag.getOpentag().getAttributes();
         attributes = attributes.stream()
                 .peek(attr -> {

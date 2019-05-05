@@ -24,8 +24,8 @@ public class HtmlParser {
 
     public Tag parseHtml() throws Exception {
         logger.info("parsing html file");
-        Token t;
         List<Token> tokens = new ArrayList<>();
+        Token t;
         while (!(t = lexer.nextToken()).getType().equals(END_OF_TEXT)) {
             tokens.add(t);
         }
