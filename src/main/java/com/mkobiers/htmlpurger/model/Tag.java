@@ -5,7 +5,7 @@ import java.util.List;
 
 import static com.mkobiers.htmlpurger.model.TokenType.TAGNAME;
 
-public class Tag extends Content {
+public class Tag extends TagStandalone {
     private Opentag opentag;
     private List<Content> content;
     private Closetag closetag;
@@ -30,10 +30,6 @@ public class Tag extends Content {
         return content;
     }
 
-    public void setContent(List<Content> content) {
-        this.content = content;
-    }
-
     public void addContent(Content content) {
         this.content.add(0, content);
     }
@@ -46,6 +42,12 @@ public class Tag extends Content {
         this.closetag = closetag;
     }
 
+    public void clear() {
+        this.opentag = null;
+        this.content = new ArrayList<>();
+        this.closetag = null;
+    }
+
     @Override
     public String toString() {
         StringBuilder contentBuilder = new StringBuilder();
@@ -53,23 +55,5 @@ public class Tag extends Content {
         return (opentag != null ? opentag.toString() + "\n" : "") +
                 contentBuilder.toString() +
                 (closetag != null ? closetag.toString() + "\n" : "");
-    }
-
-    private class TagIterator {
-        private int idx = 0;
-        private Tag current;
-
-        public Tag next() {
-            if (current == null) {
-                while (content.get(idx) != null && !(content.get(idx) instanceof Tag)) {
-                    idx += 1;
-                }
-                current = (Tag) content.get(idx);
-            } else {
-
-            }
-
-            return null;
-        }
     }
 }

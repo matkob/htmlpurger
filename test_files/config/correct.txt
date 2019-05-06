@@ -1,12 +1,12 @@
-HTML
+H1
 {
-    font, color
-}
-
-TITLE {
-    remove
+    border, margin
 }
 
 BODY {
-    text, color
+    color
+}
+
+IMG {
+    remove
 }

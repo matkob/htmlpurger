@@ -16,10 +16,16 @@ import static com.mkobiers.htmlpurger.model.TokenType.*;
 public class HtmlParser {
 
     private Logger logger = LoggerFactory.getLogger(HtmlParser.class);
+    private final String NO_RIGHT_BRACE_INFO = "no right brace found";
+    private final String NO_TAG_NAME_INFO = "no tag name found";
+    private final String NO_LEFT_BRACE_INFO = "no left brace found";
+
     private HtmlLexer lexer;
+    private IReader reader;
 
     public HtmlParser(IReader reader) {
         this.lexer = new HtmlLexer(reader);
+        this.reader = reader;
     }
 
     public Tag parseHtml() throws Exception {
@@ -52,7 +58,9 @@ public class HtmlParser {
                     tag.setOpentag(opentag);
                     break;
                 } else {
-                    tag.addContent(new TagStandalone(opentag));
+                    TagStandalone standalone = new TagStandalone();
+                    standalone.setOpentag(opentag);
+                    tag.addContent(standalone);
                 }
             }
         }
@@ -63,7 +71,7 @@ public class HtmlParser {
         Opentag opentag = new Opentag();
         Token rightBrace;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGOPEN_RIGHT)) {
-            throw new ParsingException();
+            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_RIGHT_BRACE_INFO);
         }
         opentag.setRightBrace(rightBrace);
 
@@ -71,13 +79,13 @@ public class HtmlParser {
 
         Token name;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGOPEN_NAME)) {
-            throw new ParsingException();
+            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_TAG_NAME_INFO);
         }
         opentag.setName(name);
 
         Token leftBrace;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGOPEN_LEFT)) {
-            throw new ParsingException();
+            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_LEFT_BRACE_INFO);
         }
         opentag.setLeftBrace(leftBrace);
 
@@ -88,17 +96,17 @@ public class HtmlParser {
         Closetag closetag = new Closetag();
         Token rightBrace;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGCLOSE_RIGHT)) {
-            throw new ParsingException();
+            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_RIGHT_BRACE_INFO);
         }
         closetag.setRightBrace(rightBrace);
         Token name;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGCLOSE_NAME)) {
-            throw new ParsingException();
+            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_TAG_NAME_INFO);
         }
         closetag.setName(name);
         Token leftBrace;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGCLOSE_LEFT)) {
-            throw new ParsingException();
+            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_LEFT_BRACE_INFO);
         }
         closetag.setLeftBrace(leftBrace);
 

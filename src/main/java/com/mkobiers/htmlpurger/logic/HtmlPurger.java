@@ -1,16 +1,14 @@
 package com.mkobiers.htmlpurger.logic;
 
 import com.mkobiers.htmlpurger.io.IReader;
-import com.mkobiers.htmlpurger.model.Attribute;
-import com.mkobiers.htmlpurger.model.Tag;
-import com.mkobiers.htmlpurger.model.Token;
+import com.mkobiers.htmlpurger.model.*;
 import com.mkobiers.htmlpurger.parser.ConfigParser;
 import com.mkobiers.htmlpurger.parser.HtmlParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Writer;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,29 +21,39 @@ public class HtmlPurger {
     private ConfigParser configParser;
     private HtmlParser htmlParser;
     private Writer writer;
+    private Map<Token, Boolean> used;
 
     public HtmlPurger(IReader configReader, IReader htmlReader, Writer writer) {
         this.configParser = new ConfigParser(configReader);
         this.htmlParser = new HtmlParser(htmlReader);
         this.writer = writer;
+        this.used = new HashMap<>();
     }
 
-    public void process() throws Exception {
+    public void purgeHtml() throws Exception {
         Map<Token, List<Token>> config = configParser.parseConfig();
+        config.keySet().forEach(token -> used.put(token, false));
         //TODO: info about unused rules
         Tag root = htmlParser.parseHtml();
         logger.info("processing html file");
         applyRules(config, root);
+        used.entrySet().stream()
+                .filter(tokenUsed -> !tokenUsed.getValue())
+                .forEach(notUsed -> {
+                    ConfigEntry entry = new ConfigEntry(notUsed.getKey(), config.get(notUsed.getKey()));
+                    logger.info("\"{}\" not used", entry);
+                });
         logger.info("creating output file");
         writer.write(root.toString());
         writer.close();
         logger.info("output file created");
     }
 
-    private void applyRules(Map<Token, List<Token>> config, Tag tag) {
+    private void applyRules(Map<Token, List<Token>> config, TagStandalone tag) {
         if (config.containsKey(tag.getTagname())) {
             logger.info("applying rules to {}", tag.getOpentag().getName().getText());
             List<Token> rules = config.get(tag.getTagname());
+            used.put(tag.getTagname(), true);
             if (rules.contains(Token.REMOVE)) {
                 removeTag(tag);
             } else if (rules.contains(Token.ALL)) {
@@ -56,20 +64,20 @@ public class HtmlPurger {
         } else {
             logger.info("no rules found for {}", tag.getOpentag().getName().getText());
         }
-        tag.getContent().stream()
-                .filter(content -> content instanceof Tag)
-                .forEach(inner -> applyRules(config, (Tag) inner));
-
+        if (tag instanceof Tag) {
+            Tag withContent = (Tag) tag;
+            withContent.getContent().stream()
+                    .filter(content -> content instanceof TagStandalone)
+                    .forEach(inner -> applyRules(config, (TagStandalone) inner));
+        }
     }
 
-    private void removeTag(Tag tag) {
+    private void removeTag(TagStandalone tag) {
         logger.info("removing {}", tag.getOpentag().getName().getText());
-        tag.setOpentag(null);
-        tag.setContent(new ArrayList<>());
-        tag.setClosetag(null);
+        tag.clear();
     }
 
-    private void removeAll(Tag tag) {
+    private void removeAll(TagStandalone tag) {
         logger.info("removing all {} styles", tag.getOpentag().getName().getText());
         List<Attribute> attributes = tag.getOpentag().getAttributes();
         attributes = attributes.stream()
@@ -78,7 +86,7 @@ public class HtmlPurger {
         tag.getOpentag().setAttributes(attributes);
     }
 
-    private void filterDecorators(Tag tag, List<Token> rules) {
+    private void filterDecorators(TagStandalone tag, List<Token> rules) {
         logger.info("purging {} styles", tag.getOpentag().getName().getText());
         List<Attribute> attributes = tag.getOpentag().getAttributes();
         attributes = attributes.stream()

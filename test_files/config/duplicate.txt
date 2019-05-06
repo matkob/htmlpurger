@@ -1,0 +1,15 @@
+H1 {
+border, margin
+}
+
+H1 {
+	remove
+}
+
+BODY {
+	color
+}
+
+IMG {
+	remove
+}
