@@ -10,23 +10,19 @@ public class Token {
 
     private String text;
     private TokenType type;
-    private int startRow;
-    private int startColumn;
-    private int endRow;
-    private int endColumn;
+    private int row;
+    private int column;
 
     public Token(String text, TokenType type) {
         this.text = text;
         this.type = type;
     }
 
-    public Token(String text, TokenType type, int startRow, int startColumn, int endRow, int endColumn) {
+    public Token(String text, TokenType type, int row, int column) {
         this.text = text;
         this.type = type;
-        this.startRow = startRow;
-        this.startColumn = startColumn;
-        this.endRow = endRow;
-        this.endColumn = endColumn;
+        this.row = row;
+        this.column = column;
     }
 
     public String getText() {
@@ -41,20 +37,12 @@ public class Token {
         return type;
     }
 
-    public int getStartRow() {
-        return startRow;
+    public int getRow() {
+        return row;
     }
 
-    public int getStartColumn() {
-        return startColumn;
-    }
-
-    public int getEndRow() {
-        return endRow;
-    }
-
-    public int getEndColumn() {
-        return endColumn;
+    public int getColumn() {
+        return column;
     }
 
     @Override

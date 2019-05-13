@@ -21,11 +21,11 @@ public class ConfigParserTest {
         ConfigParser parser = new ConfigParser(reader);
         Map<Token, List<Token>> rules = parser.parseConfig();
 
-        Assertions.assertEquals(2, rules.size());
+        Assertions.assertEquals(4, rules.size());
         Assertions.assertNotNull(rules.get(new Token("BODY", TAGNAME)));
-        Assertions.assertNotNull(rules.get(new Token("HTML", TAGNAME)));
+        Assertions.assertNotNull(rules.get(new Token("H1", TAGNAME)));
         Assertions.assertEquals(1, rules.get(new Token("BODY", TAGNAME)).size());
-        Assertions.assertEquals(2, rules.get(new Token("HTML", TAGNAME)).size());
+        Assertions.assertEquals(2, rules.get(new Token("H1", TAGNAME)).size());
     }
 
     @Test

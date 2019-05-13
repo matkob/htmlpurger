@@ -50,7 +50,7 @@ public class ConfigLexer {
         current = LEFT_BRACE;
         text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, TAGNAME, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, TAGNAME, startRow, startColumn);
     }
 
     private Token buildRule() throws GrammarException {
@@ -78,7 +78,7 @@ public class ConfigLexer {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
         builder = new StringBuilder();
-        return new Token(text, RULE, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, RULE, startRow, startColumn);
     }
 
     private Token buildComma() throws GrammarException {
@@ -92,7 +92,7 @@ public class ConfigLexer {
         current = RULE;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, COMMA, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, COMMA, startRow, startColumn);
     }
 
     private Token buildLeftbrace() throws GrammarException {
@@ -106,7 +106,7 @@ public class ConfigLexer {
         current = RULE;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, LEFT_BRACE, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, LEFT_BRACE, startRow, startColumn);
     }
 
     private Token buildRightbrace() throws GrammarException {
@@ -120,7 +120,7 @@ public class ConfigLexer {
         current = TAGNAME;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, RIGHT_BRACE, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, RIGHT_BRACE, startRow, startColumn);
     }
     
     private boolean isRuleSupported(String text) {

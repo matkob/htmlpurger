@@ -44,7 +44,7 @@ public class ConfigParser {
             while (it.hasNext()) {
                 ConfigEntry configEntry = buildConfigEntry(it);
                 if (rules.containsKey(configEntry.getTagname())) {
-                    throw new DuplicationException(configEntry.toString());
+                    throw new DuplicationException(configEntry.toString(), configEntry.getTagname().getRow(), configEntry.getTagname().getColumn());
                 }
                 rules.put(configEntry.getTagname(), configEntry.getRules());
             }
@@ -57,12 +57,12 @@ public class ConfigParser {
     private ConfigEntry buildConfigEntry(ListIterator<Token> it) throws Exception {
         Token tagname;
         if (!(tagname = it.next()).getType().equals(TAGNAME)) {
-            throw new ParsingException(tagname.getStartRow(), tagname.getStartColumn(), NO_TAG_NAME_INFO);
+            throw new ParsingException(tagname.getRow(), tagname.getColumn(), NO_TAG_NAME_INFO);
         }
         ConfigEntry configEntry = new ConfigEntry(tagname);
         Token leftBrace;
         if (!(leftBrace = it.next()).getType().equals(LEFT_BRACE)) {
-            throw new ParsingException(leftBrace.getStartRow(), leftBrace.getStartColumn(), NO_LEFT_BRACE_INFO);
+            throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), NO_LEFT_BRACE_INFO);
         }
         Token rule;
         while ((rule = it.next()).getType().equals(RULE) || rule.getType().equals(COMMA)) {
@@ -71,7 +71,7 @@ public class ConfigParser {
             }
         }
         if (!rule.getType().equals(RIGHT_BRACE)) {
-            throw new ParsingException(rule.getStartRow(), rule.getStartColumn(), NO_RIGHT_BRACE_INFO);
+            throw new ParsingException(rule.getRow(), rule.getColumn(), NO_RIGHT_BRACE_INFO);
         }
         return configEntry;
     }

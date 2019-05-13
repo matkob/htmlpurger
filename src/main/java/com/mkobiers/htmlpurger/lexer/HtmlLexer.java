@@ -60,7 +60,7 @@ public class HtmlLexer {
         next = TAGOPEN_NAME;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, TAGOPEN_LEFT, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, TAGOPEN_LEFT, startRow, startColumn);
     }
 
     private Token buildTagopenRight() throws GrammarException {
@@ -74,7 +74,7 @@ public class HtmlLexer {
         next = CONTENT;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, TAGOPEN_RIGHT, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, TAGOPEN_RIGHT, startRow, startColumn);
     }
 
     private Token buildTagopenName() throws GrammarException {
@@ -94,13 +94,13 @@ public class HtmlLexer {
             next = ATTR_NAME;
             text = builder.toString();
             builder = new StringBuilder();
-            return new Token(text, TAGOPEN_NAME, startRow, startColumn, reader.getRow(), reader.getColumn());
+            return new Token(text, TAGOPEN_NAME, startRow, startColumn);
         } else if(c == '>') {
             reader.rewind();
             next = TAGOPEN_RIGHT;
             text = builder.toString();
             builder = new StringBuilder();
-            return new Token(text, TAGOPEN_NAME, startRow, startColumn, reader.getRow(), reader.getColumn());
+            return new Token(text, TAGOPEN_NAME, startRow, startColumn);
         } else {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
@@ -117,7 +117,7 @@ public class HtmlLexer {
         next = TAGCLOSE_NAME;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, TAGCLOSE_LEFT, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, TAGCLOSE_LEFT, startRow, startColumn);
     }
 
     private Token buildTagcloseRight() throws GrammarException {
@@ -131,7 +131,7 @@ public class HtmlLexer {
         next = CONTENT;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, TAGCLOSE_RIGHT, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, TAGCLOSE_RIGHT, startRow, startColumn);
     }
 
     private Token buildTagcloseName() throws GrammarException {
@@ -151,7 +151,7 @@ public class HtmlLexer {
             next = TAGCLOSE_RIGHT;
             text = builder.toString();
             builder = new StringBuilder();
-            return new Token(text, TAGCLOSE_NAME, startRow, startColumn, reader.getRow(), reader.getColumn());
+            return new Token(text, TAGCLOSE_NAME, startRow, startColumn);
         } else {
             throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
         }
@@ -179,7 +179,7 @@ public class HtmlLexer {
         reader.rewind();
         text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, ATTR_NAME, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, ATTR_NAME, startRow, startColumn);
     }
 
     private Token buildValue() throws GrammarException {
@@ -211,7 +211,7 @@ public class HtmlLexer {
         next = VALUE;
         String text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, EQUALS, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, EQUALS, startRow, startColumn);
     }
 
     private Token buildSinglequoted() throws GrammarException {
@@ -242,7 +242,7 @@ public class HtmlLexer {
         reader.rewind();
         text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, SINGLEQUOTED, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, SINGLEQUOTED, startRow, startColumn);
     }
 
     private Token buildDoublequoted() throws GrammarException {
@@ -273,7 +273,7 @@ public class HtmlLexer {
         reader.rewind();
         text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, DOUBLEQUOTED, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, DOUBLEQUOTED, startRow, startColumn);
     }
 
     private Token buildNum() throws GrammarException {
@@ -294,7 +294,7 @@ public class HtmlLexer {
         reader.rewind();
         text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, NUM, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, NUM, startRow, startColumn);
     }
 
     private Token buildContent() throws GrammarException {
@@ -330,7 +330,7 @@ public class HtmlLexer {
         }
         text = builder.toString();
         builder = new StringBuilder();
-        return new Token(text, TEXT, startRow, startColumn, reader.getRow(), reader.getColumn());
+        return new Token(text, TEXT, startRow, startColumn);
     }
 
     private char truncate() {

@@ -72,7 +72,7 @@ public class HtmlParser {
         Token rightBrace = null;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGOPEN_RIGHT)) {
             if (rightBrace != null) {
-                throw new ParsingException(rightBrace.getStartRow(), rightBrace.getStartColumn(), NO_RIGHT_BRACE_INFO);
+                throw new ParsingException(rightBrace.getRow(), rightBrace.getColumn(), NO_RIGHT_BRACE_INFO);
             } else {
                 throw new ParsingException(0, 0, NO_RIGHT_BRACE_INFO);
             }
@@ -83,7 +83,7 @@ public class HtmlParser {
         Token name = null;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGOPEN_NAME)) {
             if (name != null) {
-                throw new ParsingException(name.getStartRow(), name.getStartColumn(), NO_TAG_NAME_INFO);
+                throw new ParsingException(name.getRow(), name.getColumn(), NO_TAG_NAME_INFO);
             } else {
                 throw new ParsingException(0, 0, NO_TAG_NAME_INFO);
             }
@@ -92,7 +92,7 @@ public class HtmlParser {
         Token leftBrace = null;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGOPEN_LEFT)) {
             if (leftBrace != null) {
-                throw new ParsingException(leftBrace.getStartRow(), leftBrace.getStartColumn(), NO_LEFT_BRACE_INFO);
+                throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), NO_LEFT_BRACE_INFO);
             } else {
                 throw new ParsingException(0, 0, NO_LEFT_BRACE_INFO);
             }
@@ -108,7 +108,7 @@ public class HtmlParser {
         Token rightBrace = null;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGCLOSE_RIGHT)) {
             if (rightBrace != null) {
-                throw new ParsingException(rightBrace.getStartRow(), rightBrace.getStartColumn(), NO_RIGHT_BRACE_INFO);
+                throw new ParsingException(rightBrace.getRow(), rightBrace.getColumn(), NO_RIGHT_BRACE_INFO);
             } else {
                 throw new ParsingException(0, 0, NO_RIGHT_BRACE_INFO);
             }        }
@@ -116,7 +116,7 @@ public class HtmlParser {
         Token name = null;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGCLOSE_NAME)) {
             if (name != null) {
-                throw new ParsingException(name.getStartRow(), name.getStartColumn(), NO_TAG_NAME_INFO);
+                throw new ParsingException(name.getRow(), name.getColumn(), NO_TAG_NAME_INFO);
             } else {
                 throw new ParsingException(0, 0, NO_TAG_NAME_INFO);
             }        }
@@ -124,7 +124,7 @@ public class HtmlParser {
         Token leftBrace = null;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGCLOSE_LEFT)) {
             if (leftBrace != null) {
-                throw new ParsingException(leftBrace.getStartRow(), leftBrace.getStartColumn(), NO_LEFT_BRACE_INFO);
+                throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), NO_LEFT_BRACE_INFO);
             } else {
                 throw new ParsingException(0, 0, NO_LEFT_BRACE_INFO);
             }        }
