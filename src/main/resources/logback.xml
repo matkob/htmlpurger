@@ -15,7 +15,7 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE-PROD"/>
+        <appender-ref ref="CONSOLE-TEST"/>
     </root>
 
 </configuration>

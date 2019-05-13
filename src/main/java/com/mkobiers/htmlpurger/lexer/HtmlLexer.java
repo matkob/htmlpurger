@@ -8,7 +8,7 @@ import com.mkobiers.htmlpurger.model.exception.GrammarException;
 import static com.mkobiers.htmlpurger.model.TokenType.*;
 
 public class HtmlLexer {
-
+    private final String FILE = "HTML";
     private IReader reader;
     private TokenType next;
     private StringBuilder builder;
@@ -47,7 +47,7 @@ public class HtmlLexer {
         int startRow = reader.getRow();
         int startColumn = reader.getColumn();
         if (c != '<') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         c = reader.nextChar();
@@ -68,7 +68,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (c != '>') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         next = CONTENT;
@@ -83,7 +83,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (!isAlpha(c)) {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         while (isAlphaNum(c = reader.nextChar())) {
@@ -102,7 +102,7 @@ public class HtmlLexer {
             builder = new StringBuilder();
             return new Token(text, TAGOPEN_NAME, startRow, startColumn);
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (c != '/') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         next = TAGCLOSE_NAME;
@@ -125,7 +125,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (c != '>') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         next = CONTENT;
@@ -140,7 +140,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (!isAlpha(c)) {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         while (isAlphaNum(c = reader.nextChar())) {
@@ -153,7 +153,7 @@ public class HtmlLexer {
             builder = new StringBuilder();
             return new Token(text, TAGCLOSE_NAME, startRow, startColumn);
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
     }
 
@@ -163,7 +163,7 @@ public class HtmlLexer {
         int startRow = reader.getRow();
         int startColumn = reader.getColumn();
         if (!isAlpha(c)) {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         while (isAlphaNum(c = reader.nextChar())) {
@@ -174,7 +174,7 @@ public class HtmlLexer {
         } else if (c == '>') {
             next = TAGOPEN_RIGHT;
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         reader.rewind();
         text = builder.toString();
@@ -197,7 +197,7 @@ public class HtmlLexer {
             next = NUM;
             return buildNum();
         }
-        throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+        throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
     }
 
     private Token buildEquals() throws GrammarException {
@@ -205,7 +205,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (c != '=') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         next = VALUE;
@@ -220,7 +220,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (c != '\'') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         while (isPrintable(c = reader.nextChar()) && c != '\'') {
@@ -229,7 +229,7 @@ public class HtmlLexer {
         if (c == '\'') {
             builder.append(c);
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         c = reader.nextChar();
         if (c == '>') {
@@ -237,7 +237,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         reader.rewind();
         text = builder.toString();
@@ -251,7 +251,7 @@ public class HtmlLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (c != '\"') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         while (isPrintable(c = reader.nextChar()) && c != '\"') {
@@ -260,7 +260,7 @@ public class HtmlLexer {
         if (c == '\"') {
             builder.append(c);
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         c = reader.nextChar();
         if (c == '>') {
@@ -268,7 +268,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         reader.rewind();
         text = builder.toString();
@@ -289,7 +289,7 @@ public class HtmlLexer {
         } else if (c == ' ') {
             next = ATTR_NAME;
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         reader.rewind();
         text = builder.toString();
@@ -326,7 +326,7 @@ public class HtmlLexer {
             text = builder.toString();
             return new Token(text, END_OF_TEXT);
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         text = builder.toString();
         builder = new StringBuilder();

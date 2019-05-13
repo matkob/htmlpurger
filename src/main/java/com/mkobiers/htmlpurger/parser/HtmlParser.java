@@ -15,7 +15,7 @@ import java.util.ListIterator;
 import static com.mkobiers.htmlpurger.model.TokenType.*;
 
 public class HtmlParser {
-
+    private final String FILE = "HTML";
     private Logger logger = LoggerFactory.getLogger(HtmlParser.class);
     private final String NO_RIGHT_BRACE_INFO = "no right brace found";
     private final String NO_TAG_NAME_INFO = "no tag name found";
@@ -73,9 +73,9 @@ public class HtmlParser {
         Token rightBrace = null;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGOPEN_RIGHT)) {
             if (rightBrace != null) {
-                throw new ParsingException(rightBrace.getRow(), rightBrace.getColumn(), NO_RIGHT_BRACE_INFO);
+                throw new ParsingException(rightBrace.getRow(), rightBrace.getColumn(), FILE, NO_RIGHT_BRACE_INFO);
             } else {
-                throw new ParsingException(0, 0, NO_RIGHT_BRACE_INFO);
+                throw new ParsingException(0, 0, FILE, NO_RIGHT_BRACE_INFO);
             }
 
         }
@@ -84,18 +84,18 @@ public class HtmlParser {
         Token name = null;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGOPEN_NAME)) {
             if (name != null) {
-                throw new ParsingException(name.getRow(), name.getColumn(), NO_TAG_NAME_INFO);
+                throw new ParsingException(name.getRow(), name.getColumn(), FILE, NO_TAG_NAME_INFO);
             } else {
-                throw new ParsingException(0, 0, NO_TAG_NAME_INFO);
+                throw new ParsingException(0, 0, FILE, NO_TAG_NAME_INFO);
             }
         }
         opentag.setName(name);
         Token leftBrace = null;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGOPEN_LEFT)) {
             if (leftBrace != null) {
-                throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), NO_LEFT_BRACE_INFO);
+                throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), FILE, NO_LEFT_BRACE_INFO);
             } else {
-                throw new ParsingException(0, 0, NO_LEFT_BRACE_INFO);
+                throw new ParsingException(0, 0, FILE, NO_LEFT_BRACE_INFO);
             }
 
         }
@@ -109,25 +109,25 @@ public class HtmlParser {
         Token rightBrace = null;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGCLOSE_RIGHT)) {
             if (rightBrace != null) {
-                throw new ParsingException(rightBrace.getRow(), rightBrace.getColumn(), NO_RIGHT_BRACE_INFO);
+                throw new ParsingException(rightBrace.getRow(), rightBrace.getColumn(), FILE, NO_RIGHT_BRACE_INFO);
             } else {
-                throw new ParsingException(0, 0, NO_RIGHT_BRACE_INFO);
+                throw new ParsingException(0, 0, FILE, NO_RIGHT_BRACE_INFO);
             }        }
         closetag.setRightBrace(rightBrace);
         Token name = null;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGCLOSE_NAME)) {
             if (name != null) {
-                throw new ParsingException(name.getRow(), name.getColumn(), NO_TAG_NAME_INFO);
+                throw new ParsingException(name.getRow(), name.getColumn(), FILE, NO_TAG_NAME_INFO);
             } else {
-                throw new ParsingException(0, 0, NO_TAG_NAME_INFO);
+                throw new ParsingException(0, 0, FILE, NO_TAG_NAME_INFO);
             }        }
         closetag.setName(name);
         Token leftBrace = null;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGCLOSE_LEFT)) {
             if (leftBrace != null) {
-                throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), NO_LEFT_BRACE_INFO);
+                throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), FILE, NO_LEFT_BRACE_INFO);
             } else {
-                throw new ParsingException(0, 0, NO_LEFT_BRACE_INFO);
+                throw new ParsingException(0, 0, FILE, NO_LEFT_BRACE_INFO);
             }        }
         closetag.setLeftBrace(leftBrace);
 

@@ -8,7 +8,7 @@ import com.mkobiers.htmlpurger.model.exception.GrammarException;
 import static com.mkobiers.htmlpurger.model.TokenType.*;
 
 public class ConfigLexer {
-
+    private final String FILE = "CONFIG";
     private IReader reader;
     private TokenType current;
     private StringBuilder builder;
@@ -38,7 +38,7 @@ public class ConfigLexer {
             return new Token(text, END_OF_TEXT);
         }
         if (!isAlpha(c)) {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         int startRow = reader.getRow();
         int startColumn = reader.getColumn();
@@ -61,7 +61,7 @@ public class ConfigLexer {
         if (isAlpha(c)) {
             builder.append(c);
         } else {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         while (isAlpha(c = reader.nextChar())) {
             builder.append(c);
@@ -75,7 +75,7 @@ public class ConfigLexer {
         }
         text = builder.toString();
         if (!isRuleSupported(text)) {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder = new StringBuilder();
         return new Token(text, RULE, startRow, startColumn);
@@ -86,7 +86,7 @@ public class ConfigLexer {
         int startColumn = reader.getColumn();
         char c = reader.nextChar();
         if (c != ',') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         current = RULE;
@@ -100,7 +100,7 @@ public class ConfigLexer {
         int startRow = reader.getRow();
         int startColumn = reader.getColumn();
         if (c != '{') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         current = RULE;
@@ -114,7 +114,7 @@ public class ConfigLexer {
         int startRow = reader.getRow();
         int startColumn = reader.getColumn();
         if (c != '}') {
-            throw new GrammarException(reader.getRow(), reader.getColumn(), reader.getErrorMessage());
+            throw new GrammarException(reader.getRow(), reader.getColumn(), FILE, reader.getErrorMessage());
         }
         builder.append(c);
         current = TAGNAME;

@@ -15,7 +15,7 @@ import java.util.*;
 import static com.mkobiers.htmlpurger.model.TokenType.*;
 
 public class ConfigParser {
-
+    private final String FILE = "CONFIG";
     private Logger logger = LoggerFactory.getLogger(ConfigParser.class);
     private final String NO_RIGHT_BRACE_INFO = "no right brace found";
     private final String NO_TAG_NAME_INFO = "no tag name found";
@@ -54,12 +54,12 @@ public class ConfigParser {
     private ConfigEntry buildConfigEntry(ListIterator<Token> it) throws ParsingException {
         Token tagname;
         if (!(tagname = it.next()).getType().equals(TAGNAME)) {
-            throw new ParsingException(tagname.getRow(), tagname.getColumn(), NO_TAG_NAME_INFO);
+            throw new ParsingException(tagname.getRow(), tagname.getColumn(), FILE, NO_TAG_NAME_INFO);
         }
         ConfigEntry configEntry = new ConfigEntry(tagname);
         Token leftBrace;
         if (!(leftBrace = it.next()).getType().equals(LEFT_BRACE)) {
-            throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), NO_LEFT_BRACE_INFO);
+            throw new ParsingException(leftBrace.getRow(), leftBrace.getColumn(), FILE, NO_LEFT_BRACE_INFO);
         }
         Token rule;
         while ((rule = it.next()).getType().equals(RULE) || rule.getType().equals(COMMA)) {
@@ -68,7 +68,7 @@ public class ConfigParser {
             }
         }
         if (!rule.getType().equals(RIGHT_BRACE)) {
-            throw new ParsingException(rule.getRow(), rule.getColumn(), NO_RIGHT_BRACE_INFO);
+            throw new ParsingException(rule.getRow(), rule.getColumn(), FILE, NO_RIGHT_BRACE_INFO);
         }
         return configEntry;
     }

@@ -64,8 +64,6 @@ public class HtmlPurger {
             } else {
                 filterDecorators(tag, rules);
             }
-        } else {
-            logger.info("no rules found for {}", tag.getOpentag().getName().getText());
         }
         if (tag instanceof Tag) {
             Tag withContent = (Tag) tag;
