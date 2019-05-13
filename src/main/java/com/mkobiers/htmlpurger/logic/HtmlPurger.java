@@ -33,7 +33,6 @@ public class HtmlPurger {
     public void purgeHtml() throws Exception {
         Map<Token, List<Token>> config = configParser.parseConfig();
         config.keySet().forEach(token -> used.put(token, false));
-        //TODO: info about unused rules
         Tag root = htmlParser.parseHtml();
         logger.info("processing html file");
         applyRules(config, root);

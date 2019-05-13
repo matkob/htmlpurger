@@ -10,10 +10,23 @@ public class Token {
 
     private String text;
     private TokenType type;
+    private int startRow;
+    private int startColumn;
+    private int endRow;
+    private int endColumn;
 
     public Token(String text, TokenType type) {
         this.text = text;
         this.type = type;
+    }
+
+    public Token(String text, TokenType type, int startRow, int startColumn, int endRow, int endColumn) {
+        this.text = text;
+        this.type = type;
+        this.startRow = startRow;
+        this.startColumn = startColumn;
+        this.endRow = endRow;
+        this.endColumn = endColumn;
     }
 
     public String getText() {
@@ -28,8 +41,20 @@ public class Token {
         return type;
     }
 
-    public void setType(TokenType type) {
-        this.type = type;
+    public int getStartRow() {
+        return startRow;
+    }
+
+    public int getStartColumn() {
+        return startColumn;
+    }
+
+    public int getEndRow() {
+        return endRow;
+    }
+
+    public int getEndColumn() {
+        return endColumn;
     }
 
     @Override
