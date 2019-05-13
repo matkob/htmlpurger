@@ -68,7 +68,7 @@ public class HtmlParser {
         }
         if (tag.getOpentag() == null) {
             throw new ParsingException(tag.getClosetag().getLeftBrace().getRow(),
-                    tag.getClosetag().getLeftBrace().getColumn(), FILE, UNKNOWN_TAG + " " + tag.getClosetag().getName().getText());
+                    tag.getClosetag().getLeftBrace().getColumn(), FILE, UNKNOWN_TAG + " \"" + tag.getClosetag().getName().getText() + "\"");
         }
         return tag;
     }
