@@ -10,7 +10,3 @@ BODY {
 IMG {
     remove
 }
-
-IMG {
-    all
-}
