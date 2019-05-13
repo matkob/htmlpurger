@@ -5,10 +5,6 @@ public class Closetag {
     private Token name;
     private Token rightBrace;
 
-    public Closetag() {
-
-    }
-
     public Token getLeftBrace() {
         return leftBrace;
     }

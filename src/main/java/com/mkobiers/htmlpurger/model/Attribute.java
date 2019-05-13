@@ -6,10 +6,6 @@ public class Attribute {
     private Token equals;
     private Token value;
 
-    public Attribute() {
-
-    }
-
     public Token getName() {
         return name;
     }
