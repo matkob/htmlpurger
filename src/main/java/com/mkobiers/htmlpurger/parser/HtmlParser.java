@@ -20,6 +20,7 @@ public class HtmlParser {
     private final String NO_RIGHT_BRACE_INFO = "no right brace found";
     private final String NO_TAG_NAME_INFO = "no tag name found";
     private final String NO_LEFT_BRACE_INFO = "no left brace found";
+    private final String UNKNOWN_TAG = "unknown tag";
 
     private HtmlLexer lexer;
     private IReader reader;
@@ -64,6 +65,10 @@ public class HtmlParser {
                     tag.addContent(standalone);
                 }
             }
+        }
+        if (tag.getOpentag() == null) {
+            throw new ParsingException(tag.getClosetag().getLeftBrace().getRow(),
+                    tag.getClosetag().getLeftBrace().getColumn(), FILE, UNKNOWN_TAG + " " + tag.getClosetag().getName().getText());
         }
         return tag;
     }
