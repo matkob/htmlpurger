@@ -2,11 +2,15 @@ package com.mkobiers.htmlpurger.logic;
 
 import com.mkobiers.htmlpurger.io.IReader;
 import com.mkobiers.htmlpurger.model.*;
+import com.mkobiers.htmlpurger.model.exception.DuplicationException;
+import com.mkobiers.htmlpurger.model.exception.GrammarException;
+import com.mkobiers.htmlpurger.model.exception.ParsingException;
 import com.mkobiers.htmlpurger.parser.ConfigParser;
 import com.mkobiers.htmlpurger.parser.HtmlParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +34,7 @@ public class HtmlPurger {
         this.used = new HashMap<>();
     }
 
-    public void purgeHtml() throws Exception {
+    public void purgeHtml() throws ParsingException, DuplicationException, GrammarException, IOException {
         Map<Token, List<Token>> config = configParser.parseConfig();
         config.keySet().forEach(token -> used.put(token, false));
         Tag root = htmlParser.parseHtml();

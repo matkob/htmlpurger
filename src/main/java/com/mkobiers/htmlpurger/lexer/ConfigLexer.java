@@ -19,7 +19,7 @@ public class ConfigLexer {
         this.builder = new StringBuilder();
     }
 
-    public Token nextToken() throws Exception {
+    public Token nextToken() throws GrammarException {
         switch (current) {
             case TAGNAME: return buildTagname();
             case LEFT_BRACE: return buildLeftbrace();
@@ -27,7 +27,7 @@ public class ConfigLexer {
             case COMMA: return buildComma();
             case RIGHT_BRACE: return buildRightbrace();
         }
-        throw new Exception("No matching state found");
+        return null;
     }
 
     private Token buildTagname() throws GrammarException {

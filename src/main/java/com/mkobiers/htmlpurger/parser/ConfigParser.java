@@ -5,8 +5,8 @@ import com.mkobiers.htmlpurger.lexer.ConfigLexer;
 import com.mkobiers.htmlpurger.model.ConfigEntry;
 import com.mkobiers.htmlpurger.model.Token;
 import com.mkobiers.htmlpurger.model.exception.DuplicationException;
+import com.mkobiers.htmlpurger.model.exception.GrammarException;
 import com.mkobiers.htmlpurger.model.exception.ParsingException;
-import com.mkobiers.htmlpurger.model.exception.ParsingWarning;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class ConfigParser {
         this.rules = new HashMap<>();
     }
 
-    public Map<Token, List<Token>> parseConfig() throws Exception {
+    public Map<Token, List<Token>> parseConfig() throws ParsingException, DuplicationException, GrammarException {
         logger.info("parsing config file");
         List<Token> tokens = new ArrayList<>();
         Token t;
@@ -39,22 +39,19 @@ public class ConfigParser {
             tokens.add(t);
         }
 
-        try {
-            ListIterator<Token> it = tokens.listIterator();
-            while (it.hasNext()) {
-                ConfigEntry configEntry = buildConfigEntry(it);
-                if (rules.containsKey(configEntry.getTagname())) {
-                    throw new DuplicationException(configEntry.toString(), configEntry.getTagname().getRow(), configEntry.getTagname().getColumn());
-                }
-                rules.put(configEntry.getTagname(), configEntry.getRules());
+        ListIterator<Token> it = tokens.listIterator();
+        while (it.hasNext()) {
+            ConfigEntry configEntry = buildConfigEntry(it);
+            if (rules.containsKey(configEntry.getTagname())) {
+                throw new DuplicationException(configEntry.toString(),
+                        configEntry.getTagname().getRow(), configEntry.getTagname().getColumn());
             }
-        } catch (ParsingWarning w) {
-            logger.warn(w.getMessage());
+            rules.put(configEntry.getTagname(), configEntry.getRules());
         }
         return rules;
     }
 
-    private ConfigEntry buildConfigEntry(ListIterator<Token> it) throws Exception {
+    private ConfigEntry buildConfigEntry(ListIterator<Token> it) throws ParsingException {
         Token tagname;
         if (!(tagname = it.next()).getType().equals(TAGNAME)) {
             throw new ParsingException(tagname.getRow(), tagname.getColumn(), NO_TAG_NAME_INFO);

@@ -3,6 +3,7 @@ package com.mkobiers.htmlpurger.parser;
 import com.mkobiers.htmlpurger.io.IReader;
 import com.mkobiers.htmlpurger.lexer.HtmlLexer;
 import com.mkobiers.htmlpurger.model.*;
+import com.mkobiers.htmlpurger.model.exception.GrammarException;
 import com.mkobiers.htmlpurger.model.exception.ParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class HtmlParser {
         this.reader = reader;
     }
 
-    public Tag parseHtml() throws Exception {
+    public Tag parseHtml() throws ParsingException, GrammarException {
         logger.info("parsing html file");
         List<Token> tokens = new ArrayList<>();
         Token t;
@@ -40,7 +41,7 @@ public class HtmlParser {
         return buildTag(end);
     }
 
-    private Tag buildTag(ListIterator<Token> end) throws Exception {
+    private Tag buildTag(ListIterator<Token> end) throws ParsingException {
         Tag tag = new Tag();
         tag.setClosetag(buildClosetag(end));
 

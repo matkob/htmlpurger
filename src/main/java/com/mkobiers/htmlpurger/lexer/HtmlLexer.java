@@ -19,7 +19,7 @@ public class HtmlLexer {
         this.builder = new StringBuilder();
     }
 
-    public Token nextToken() throws Exception {
+    public Token nextToken() throws GrammarException {
         switch (next) {
             case TAGOPEN_LEFT: return buildTagopenLeft();
             case TAGOPEN_RIGHT: return buildTagopenRight();
@@ -39,7 +39,7 @@ public class HtmlLexer {
             case NUM: return buildNum();
             case TEXT: return buildText();
         }
-        throw new Exception("No matching state found");
+        return null;
     }
 
     private Token buildTagopenLeft() throws GrammarException {
