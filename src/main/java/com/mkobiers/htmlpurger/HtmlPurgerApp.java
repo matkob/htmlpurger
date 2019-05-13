@@ -21,6 +21,7 @@ public class HtmlPurgerApp {
         Options options = new Options();
         options.addOption("p", "page", true, "source of html file");
         options.addOption("c", "conf", true, "source of config file");
+        options.addOption("o", "out", true, "path of output file");
         options.addOption("h", "help", false, "displays this message");
 
         IReader htmlReader = null;
@@ -50,9 +51,13 @@ public class HtmlPurgerApp {
                 logger.warn("specify correct html and config filepaths!");
                 System.exit(1);
             }
+            String outPath = "out.html";
+            if (cmd.hasOption("o")) {
+                outPath = cmd.getOptionValue("o");
+            }
 
             HtmlPurger purger = new HtmlPurger(configReader, htmlReader,
-                    new BufferedWriter(new FileWriter("out.html")));
+                    new BufferedWriter(new FileWriter(outPath)));
             purger.purgeHtml();
         } catch (ParseException e) {
             logger.error("wrong arguments");
