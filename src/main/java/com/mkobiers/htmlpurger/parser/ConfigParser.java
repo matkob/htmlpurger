@@ -57,11 +57,12 @@ public class ConfigParser {
     private ConfigEntry buildConfigEntry(ListIterator<Token> it) throws Exception {
         Token tagname;
         if (!(tagname = it.next()).getType().equals(TAGNAME)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_TAG_NAME_INFO);
+            throw new ParsingException(tagname.getStartRow(), tagname.getStartColumn(), NO_TAG_NAME_INFO);
         }
         ConfigEntry configEntry = new ConfigEntry(tagname);
-        if (!it.next().getType().equals(LEFT_BRACE)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_LEFT_BRACE_INFO);
+        Token leftBrace;
+        if (!(leftBrace = it.next()).getType().equals(LEFT_BRACE)) {
+            throw new ParsingException(leftBrace.getStartRow(), leftBrace.getStartColumn(), NO_LEFT_BRACE_INFO);
         }
         Token rule;
         while ((rule = it.next()).getType().equals(RULE) || rule.getType().equals(COMMA)) {
@@ -70,7 +71,7 @@ public class ConfigParser {
             }
         }
         if (!rule.getType().equals(RIGHT_BRACE)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_RIGHT_BRACE_INFO);
+            throw new ParsingException(rule.getStartRow(), rule.getStartColumn(), NO_RIGHT_BRACE_INFO);
         }
         return configEntry;
     }

@@ -69,23 +69,34 @@ public class HtmlParser {
 
     private Opentag buildOpentag(ListIterator<Token> it) throws ParsingException {
         Opentag opentag = new Opentag();
-        Token rightBrace;
+        Token rightBrace = null;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGOPEN_RIGHT)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_RIGHT_BRACE_INFO);
+            if (rightBrace != null) {
+                throw new ParsingException(rightBrace.getStartRow(), rightBrace.getStartColumn(), NO_RIGHT_BRACE_INFO);
+            } else {
+                throw new ParsingException(0, 0, NO_RIGHT_BRACE_INFO);
+            }
+
         }
         opentag.setRightBrace(rightBrace);
-
         opentag.setAttributes(buildAttributes(it));
-
-        Token name;
+        Token name = null;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGOPEN_NAME)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_TAG_NAME_INFO);
+            if (name != null) {
+                throw new ParsingException(name.getStartRow(), name.getStartColumn(), NO_TAG_NAME_INFO);
+            } else {
+                throw new ParsingException(0, 0, NO_TAG_NAME_INFO);
+            }
         }
         opentag.setName(name);
-
-        Token leftBrace;
+        Token leftBrace = null;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGOPEN_LEFT)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_LEFT_BRACE_INFO);
+            if (leftBrace != null) {
+                throw new ParsingException(leftBrace.getStartRow(), leftBrace.getStartColumn(), NO_LEFT_BRACE_INFO);
+            } else {
+                throw new ParsingException(0, 0, NO_LEFT_BRACE_INFO);
+            }
+
         }
         opentag.setLeftBrace(leftBrace);
 
@@ -94,20 +105,29 @@ public class HtmlParser {
 
     private Closetag buildClosetag(ListIterator<Token> it) throws ParsingException {
         Closetag closetag = new Closetag();
-        Token rightBrace;
+        Token rightBrace = null;
         if (!it.hasPrevious() || !(rightBrace = it.previous()).getType().equals(TAGCLOSE_RIGHT)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_RIGHT_BRACE_INFO);
-        }
+            if (rightBrace != null) {
+                throw new ParsingException(rightBrace.getStartRow(), rightBrace.getStartColumn(), NO_RIGHT_BRACE_INFO);
+            } else {
+                throw new ParsingException(0, 0, NO_RIGHT_BRACE_INFO);
+            }        }
         closetag.setRightBrace(rightBrace);
-        Token name;
+        Token name = null;
         if (!it.hasPrevious() || !(name = it.previous()).getType().equals(TAGCLOSE_NAME)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_TAG_NAME_INFO);
-        }
+            if (name != null) {
+                throw new ParsingException(name.getStartRow(), name.getStartColumn(), NO_TAG_NAME_INFO);
+            } else {
+                throw new ParsingException(0, 0, NO_TAG_NAME_INFO);
+            }        }
         closetag.setName(name);
-        Token leftBrace;
+        Token leftBrace = null;
         if (!it.hasPrevious() || !(leftBrace = it.previous()).getType().equals(TAGCLOSE_LEFT)) {
-            throw new ParsingException(reader.getRow(), reader.getColumn(), reader.getErrorMessage(), NO_LEFT_BRACE_INFO);
-        }
+            if (leftBrace != null) {
+                throw new ParsingException(leftBrace.getStartRow(), leftBrace.getStartColumn(), NO_LEFT_BRACE_INFO);
+            } else {
+                throw new ParsingException(0, 0, NO_LEFT_BRACE_INFO);
+            }        }
         closetag.setLeftBrace(leftBrace);
 
         return closetag;
