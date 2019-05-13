@@ -44,7 +44,7 @@ public class HtmlPurger {
                 .filter(tokenUsed -> !tokenUsed.getValue())
                 .forEach(notUsed -> {
                     ConfigEntry entry = new ConfigEntry(notUsed.getKey(), config.get(notUsed.getKey()));
-                    logger.info("\"{}\" not used", entry);
+                    logger.info("CONFIG not used rule at {},{} - \"{}\"", entry.getTagname().getRow(), entry.getTagname().getColumn(), entry);
                 });
         logger.info("creating output file");
         writer.write(root.toString());

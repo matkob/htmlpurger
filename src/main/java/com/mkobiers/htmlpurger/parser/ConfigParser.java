@@ -43,8 +43,8 @@ public class ConfigParser {
         while (it.hasNext()) {
             ConfigEntry configEntry = buildConfigEntry(it);
             if (rules.containsKey(configEntry.getTagname())) {
-                throw new DuplicationException(configEntry.toString(),
-                        configEntry.getTagname().getRow(), configEntry.getTagname().getColumn());
+                throw new DuplicationException(configEntry.getTagname().getRow(),
+                        configEntry.getTagname().getColumn(), FILE, configEntry.toString());
             }
             rules.put(configEntry.getTagname(), configEntry.getRules());
         }

@@ -15,6 +15,6 @@ public class ParsingException extends Exception {
 
     @Override
     public String getMessage() {
-        return file + " parsing exception at position " + row + "," + col + " - " + cause;
+        return file + " parsing exception at " + row + "," + col + " - " + cause;
     }
 }

@@ -15,6 +15,6 @@ public class GrammarException extends Exception {
 
     @Override
     public String getMessage() {
-        return file + " grammar exception at position " + row + "," + col + " \"" + message + "\"";
+        return file + " grammar exception at " + row + "," + col + " \"" + message + "\"";
     }
 }
